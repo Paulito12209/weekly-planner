@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wochenplaner</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-
-    <script src="script.js"></script>
+  <header>
+    <button id="menuBtn">☰</button>
+    <h1>Wochenplaner</h1>
+  </header>
+  <nav id="menu" class="hidden">
+    <ul>
+      <li><a href="#" data-page="today">Heute</a></li>
+      <li><a href="#" data-page="days">Tage</a></li>
+      <li><a href="#" data-page="motto">Motto</a></li>
+      <li><a href="#" data-page="streaks">Streaks</a></li>
+    </ul>
+  </nav>
+  <div id="content"></div>
+  <script src="script.js"></script>
 </body>
 </html>

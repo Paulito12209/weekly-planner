@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 10px;
+}
+
+#menuBtn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+#menu {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 200px;
+  background: #fff;
+  border-right: 1px solid #ccc;
+  padding: 20px;
+  transform: translateX(-220px);
+  transition: transform 0.3s;
+}
+
+#menu.open {
+  transform: translateX(0);
+}
+
+#menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+#menu li {
+  margin-bottom: 10px;
+}
+
+#menu a {
+  text-decoration: none;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
+
+#content {
+  padding: 20px;
+}
+
+.day-tile {
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #1b2f5b;
+  animation: pulse 3s linear infinite;
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 #1b2f5b; }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+
+.hour-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hour-table th,
+.hour-table td {
+  border: 1px solid #ccc;
+  padding: 4px;
+}
+
+.tasks-col {
+  min-height: 30px;
+}
+
+.streak-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.streak-card {
+  border-radius: 10px;
+  border: 1px solid #1b2f5b;
+  padding: 10px;
+}
