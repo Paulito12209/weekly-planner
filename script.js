@@ -8,37 +8,43 @@ const days = [
   'Sonntag'
 ];
 
-const storageKey = 'weekTasks';
-let tasks = {};
+const storageKey = 'plannerData';
+let data = {};
 
-function loadTasks() {
-  const data = localStorage.getItem(storageKey);
-  if (data) {
+function initDay(day) {
+  if (!data[day]) {
+    const hours = {};
+    for (let h = 1; h <= 24; h++) {
+      hours[h] = '';
+    }
+    data[day] = { motto: '', tags: [], hours };
+  }
+}
+
+function loadData() {
+  const raw = localStorage.getItem(storageKey);
+  if (raw) {
     try {
-      tasks = JSON.parse(data);
+      data = JSON.parse(raw);
     } catch (e) {
-      tasks = {};
+      data = {};
     }
   }
+  days.forEach(initDay);
 }
 
-function saveTasks() {
-  localStorage.setItem(storageKey, JSON.stringify(tasks));
+function saveData() {
+  localStorage.setItem(storageKey, JSON.stringify(data));
 }
 
-function addTask(day, text) {
-  if (!tasks[day]) {
-    tasks[day] = [];
-  }
-  tasks[day].push(text);
-  saveTasks();
-}
-
-function removeTask(day, index) {
-  if (tasks[day]) {
-    tasks[day].splice(index, 1);
-    saveTasks();
-  }
+function createInput(value, placeholder, className, onInput) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = placeholder;
+  if (className) input.className = className;
+  input.value = value;
+  input.addEventListener('input', onInput);
+  return input;
 }
 
 function renderPlanner() {
@@ -46,57 +52,87 @@ function renderPlanner() {
   planner.innerHTML = '';
 
   days.forEach(day => {
-    const container = document.createElement('div');
-    container.className = 'day';
+    initDay(day);
+    const col = document.createElement('div');
+    col.className = 'day';
 
     const header = document.createElement('h2');
     header.textContent = day;
-    container.appendChild(header);
+    col.appendChild(header);
 
-    const list = document.createElement('ul');
-    (tasks[day] || []).forEach((taskText, idx) => {
-      const li = document.createElement('li');
-      const span = document.createElement('span');
-      span.textContent = taskText;
+    // Motto
+    const mottoInput = createInput(
+      data[day].motto,
+      'Tagesmotto',
+      'motto-input',
+      () => {
+        data[day].motto = mottoInput.value;
+        saveData();
+      }
+    );
+    col.appendChild(mottoInput);
 
-      const btn = document.createElement('button');
-      btn.textContent = '✕';
-      btn.addEventListener('click', () => {
-        removeTask(day, idx);
-        renderPlanner();
+    // Tags
+    const tagContainer = document.createElement('div');
+    tagContainer.className = 'tags';
+
+    function renderTags() {
+      tagContainer.innerHTML = '';
+      data[day].tags.forEach((tag, idx) => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = tag;
+        const btn = document.createElement('button');
+        btn.textContent = '✕';
+        btn.addEventListener('click', () => {
+          data[day].tags.splice(idx, 1);
+          saveData();
+          renderTags();
+        });
+        span.appendChild(btn);
+        tagContainer.appendChild(span);
       });
+    }
+    renderTags();
+    col.appendChild(tagContainer);
 
-      li.appendChild(span);
-      li.appendChild(btn);
-      list.appendChild(li);
-    });
-    container.appendChild(list);
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Neue Aufgabe';
-    container.appendChild(input);
-
-    const addBtn = document.createElement('button');
-    addBtn.textContent = 'Hinzufügen';
-    addBtn.addEventListener('click', () => {
-      if (input.value.trim() !== '') {
-        addTask(day, input.value.trim());
-        input.value = '';
-        renderPlanner();
+    const tagInput = createInput('', 'Tag hinzufügen', 'tag-input', () => {});
+    tagInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter' && tagInput.value.trim() !== '') {
+        data[day].tags.push(tagInput.value.trim());
+        tagInput.value = '';
+        saveData();
+        renderTags();
       }
     });
-    container.appendChild(addBtn);
+    col.appendChild(tagInput);
 
-    input.addEventListener('keypress', e => {
-      if (e.key === 'Enter') {
-        addBtn.click();
-      }
-    });
+    // Hours
+    for (let h = 1; h <= 24; h++) {
+      const hourRow = document.createElement('div');
+      hourRow.className = 'hour';
 
-    planner.appendChild(container);
+      const label = document.createElement('label');
+      label.textContent = h;
+      hourRow.appendChild(label);
+
+      const hourInput = createInput(
+        data[day].hours[h] || '',
+        '',
+        '',
+        () => {
+          data[day].hours[h] = hourInput.value;
+          saveData();
+        }
+      );
+      hourRow.appendChild(hourInput);
+
+      col.appendChild(hourRow);
+    }
+
+    planner.appendChild(col);
   });
 }
 
-loadTasks();
+loadData();
 renderPlanner();
