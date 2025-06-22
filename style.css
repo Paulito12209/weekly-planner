@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+#planner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.day {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.day h2 {
+    margin-top: 0;
+}
+
+.day ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.day li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.day button {
+    margin-left: 5px;
+}
+
+input[type="text"] {
+    width: calc(100% - 10px);
+    margin-bottom: 5px;
+}
